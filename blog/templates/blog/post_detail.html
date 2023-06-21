@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">Blog Posts</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text">{{ post.content|truncatechars:100|default:"" }}</p>
+                    <p class="card-text">By: {{ post.author.user.username }}</p>
+                    <p class="card-text">Published: {{ post.created_at }}</p>
+                </div>
+            </div>
+    </div>
+{% endblock %}

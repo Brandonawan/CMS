@@ -1,0 +1,74 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Register</h1>
+        <div id="error-message" class="alert alert-danger {% if not error_message %}d-none{% endif %}" role="alert">
+            {{ error_message }}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control">
+                <span id="username-availability"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // Hide the error message when the user starts typing
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+
+        usernameInput.addEventListener('input', () => {
+            errorMessage.classList.add('d-none');
+        });
+
+        passwordInput.addEventListener('input', () => {
+            errorMessage.classList.add('d-none');
+        });
+    </script>
+
+
+    <script>
+       // Code below for checking if username already exist 
+        document.addEventListener('DOMContentLoaded', () => {
+        const usernameInput = document.getElementById('username');
+        const availabilitySpan = document.getElementById('username-availability');
+
+        usernameInput.addEventListener('input', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+            checkUsernameAvailability(username);
+            } else {
+            availabilitySpan.textContent = '';
+            }
+        });
+
+        function checkUsernameAvailability(username) {
+            fetch(`/check_username_availability/?username=${encodeURIComponent(username)}`)
+            .then((response) => response.json())
+            .then((data) => {
+                availabilitySpan.textContent = data.message;
+                availabilitySpan.style.color = data.available ? 'green' : 'red';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        });
+    </script>
+    
+
+{% endblock %}
